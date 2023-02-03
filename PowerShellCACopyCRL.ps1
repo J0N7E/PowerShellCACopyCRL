@@ -4,8 +4,9 @@
 
  .DESCRIPTION
     Copies CRL to configured CDPs
+    Triggers on Security event 4872
     Finds local CRLs from event info
-    Support configuration of individual credentials for each CDP
+    Supports configuration of individual credentials for each CDP
 
  .NOTES
     AUTHOR Jonas Henriksson
@@ -32,16 +33,13 @@
         @(
             @{
                 Enabled = $true
-                Subscription =
-@"
-<QueryList>
-    <Query Id="0" Path="Security">
-        <Select Path="Security">
-            *[System[EventID=4872]]
-        </Select>
-    </Query>
-</QueryList>
-"@
+                Subscription = @('<QueryList>',
+                                 '  <Query Id="0" Path="Security">',
+                                 '        <Select Path="Security">',
+                                 '            *[System[EventID=4872]]',
+                                 '        </Select>',
+                                 '    </Query>',
+                                 '</QueryList>') -join "`n"
                 ValueQueries =
                 @{
                     PublishURLs = 'Event/EventData/Data[@Name="PublishURLs"]'
@@ -312,8 +310,8 @@ catch [Exception]
 # SIG # Begin signature block
 # MIIekQYJKoZIhvcNAQcCoIIegjCCHn4CAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUYn8OTfWKlVSmmh8WdnmC7PuW
-# So6gghgSMIIFBzCCAu+gAwIBAgIQJTSMe3EEUZZAAWO1zNUfWTANBgkqhkiG9w0B
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUXtbYAcGz0SC+feB4Iss9hcZO
+# OxWgghgSMIIFBzCCAu+gAwIBAgIQJTSMe3EEUZZAAWO1zNUfWTANBgkqhkiG9w0B
 # AQsFADAQMQ4wDAYDVQQDDAVKME43RTAeFw0yMTA2MDcxMjUwMzZaFw0yMzA2MDcx
 # MzAwMzNaMBAxDjAMBgNVBAMMBUowTjdFMIICIjANBgkqhkiG9w0BAQEFAAOCAg8A
 # MIICCgKCAgEAzdFz3tD9N0VebymwxbB7s+YMLFKK9LlPcOyyFbAoRnYKVuF7Q6Zi
@@ -444,34 +442,34 @@ catch [Exception]
 # TE0AotjWAQ64i+7m4HJViSwnGWH2dwGMMYIF6TCCBeUCAQEwJDAQMQ4wDAYDVQQD
 # DAVKME43RQIQJTSMe3EEUZZAAWO1zNUfWTAJBgUrDgMCGgUAoHgwGAYKKwYBBAGC
 # NwIBDDEKMAigAoAAoQKAADAZBgkqhkiG9w0BCQMxDAYKKwYBBAGCNwIBBDAcBgor
-# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUfoB53o9M
-# 8ddgdTFMX1Udv88qH0gwDQYJKoZIhvcNAQEBBQAEggIAApxlamDz0be17mTxtcTQ
-# AA8HNGt6oxb9uziD0b92Q8J7BCWOZgK/lKZ4CfEGYB/IdWZPJ7Bl8Hpm9pLnBeyv
-# /WkG90ATKjrRijUIifq7YKZvz66Gx1UrXRL9bfNMyAKD5ZXQevx2wsObzJoKMmFf
-# D6S5H3E3O9bFO4oEMqevzfxZWv7td7JcJP0P27Y1PaMWER8FpMkfB81oJzwuvhKL
-# jeM1NJGkdXYQo4p4tbaZbfYV/Yh1rSXZ5vjQ4R6xsVnle3QlLhxD3vT3joNGK7C5
-# 2jxWGGjWYDfXAUFxHqPqfpTDiTswhRPOFuc5Ld2qwR1TWz3bakOr8gfgybQKIFEQ
-# CZq6dFTE3SCtyzYYmjQvtU6iXciGbv6ETe8bfns02kBcJkn4OhcBtGvQd/T/wA1e
-# rVrMo7WtORbuXmNCd/DJ6vWg3yEAbS9e06vJvUKz3zJL9uFQRKzhRhMQ1Je/o6RB
-# gRVTyCzQIOaqABTBs6QTH8uvKB2iDXt2IEqg3BDpf7G5R48N2sbw43goGuHPBJcf
-# VklBTEsK5KBQtN+ryjthyzVttAcZzm7x2trGUndb+gdOxoZcQCentSBX4xzOzdFl
-# VHUlq5VYM8GcZ01Znvf+LG/VqnYYedj7BeNEEr5ZEE4HjZWQq4FhghuACKwBjRR3
-# iy82px476roc13fmA6HAQjKhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEw
+# BgEEAYI3AgELMQ4wDAYKKwYBBAGCNwIBFTAjBgkqhkiG9w0BCQQxFgQUidb9eI+6
+# 9sIW607xI/I7O8/PzW4wDQYJKoZIhvcNAQEBBQAEggIASVd/JnHfwIuj6hPQspF7
+# xbwvv9K1xJHJRhejYNCXYA8BMbTsr3v0Ayq9sQEFzhGZ7Wf9g9JOZF5BooJU33LJ
+# 9iQhTlS3n7lWO5G0WhFWLGl/OVIY7l1pzBo1eKhBIHckTVIbwK/ncF0CL5o9eE3d
+# jcem/gCZq7KKVymsCwGp62QRdQ+FdNlLjtnT1dzuEFONcmFtRJQqyupH1plQs8PI
+# rPkHfzVC+gghOe8E0jXiPHztAzYfA4z3rwlWjY8usxUH0p09B4CqASuN9qELFBXU
+# x3WqvPGKEY64yC1PRUiwxh1oJarqsxeyM7XKZM4U5ifPuvqpzQ5N8kzdziCQylvM
+# Uyq7/MgiT8tyQ+aL0AoZoml0axOjBJUTq9t56sPDX/lZjaeraxzX5noOlIlMFQOE
+# hfIpEsMq8vSB4Wql/ZLfXBCRNNyUZxsa+6d8YFQHLbEkilJtM/R8kCQTyz2A1ARB
+# hNS5gaUoZb3+j4dbGUsjC6RKNMy7jSUH4WV0b8r4EsPQbLHlcqOGsnL/IJ7Jckkl
+# JDai00PNf3TfZ+niss6JQ9zb05JHLd/IYdaWCbaSxrrJyWE5eGY6TM7S7TAyoLU6
+# 2HzFu3y4BHn3ImNPtxL8J40blFSCP2HiL9lCAyPMpXwEvOZ6ORIuHxh2ugl9BXs0
+# 7dVa8r+IJYKu12ONCSmjIxKhggMgMIIDHAYJKoZIhvcNAQkGMYIDDTCCAwkCAQEw
 # dzBjMQswCQYDVQQGEwJVUzEXMBUGA1UEChMORGlnaUNlcnQsIEluYy4xOzA5BgNV
 # BAMTMkRpZ2lDZXJ0IFRydXN0ZWQgRzQgUlNBNDA5NiBTSEEyNTYgVGltZVN0YW1w
 # aW5nIENBAhAMTWlyS5T6PCpKPSkHgD1aMA0GCWCGSAFlAwQCAQUAoGkwGAYJKoZI
-# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjAzMTQzMzEy
-# WjAvBgkqhkiG9w0BCQQxIgQg7ayLiQTmssB8j/0oGzdRnb1f9DFMvAg2MoLhD7BQ
-# aS0wDQYJKoZIhvcNAQEBBQAEggIAS1NsAkZl0zj4bx4RbxbtyJ+cPMjqzMNWtkpP
-# 1mUvgYiKMdbZ8MfmFa5pmqnuVrdzGN2IMqEFovGF6hJlyl0z+v9y14t5iwIMAgcX
-# jy8UT3fV2XVVT+o15HUifJhvP/gufBI1alZn2WcDNISqK3viYbtVbqW8H7PrPbqu
-# JVtj7kjLAW6b+Yh/Y10UeuNZa6gNZLTPeXvqS2W/3pYu5ykZzQZlWkFEDy9tyUBM
-# 1vmLSQQyXk9evQ11H0vzDu42w4//rLp7wY0Q7r5ZnTWukCAFp+jxJtisJ6M8T1ew
-# qugp0M+QC6b2yYDjAk6kp+BRt8D4QlL3gyIU19HsSmMDby6lCIY2j5DsBiyjHh+o
-# Rp7Y0dWTs4fzPTiznx8oBLBFJ3wvkkY189V2NGOJrq9Ij+ZtbrZ5pQVtVmgWwDDm
-# oWNBIy6cEcvg2Fo8p4u8d5kQeFifMmcJJjFlWpcckSPVPs2S5fwse5Lc+X+A+S/o
-# IVImfwZUZXJxOYgkrkK4sDSPp9leWaNEkHp8fPBR5EI/tvI3Np04F+35QxBT393l
-# uzVOYVMjYd3NmTsm+6V7cr5ASs3xp3GNyRI/+xcPXpCCPW/rbwu4XqzskrdlkYPM
-# GPtBXU4nsKXq6F6xImS1SCJntWv655yjt2arHwe5wwxCC1qK09gS0ha4a9zV+46x
-# Tg3BRWQ=
+# hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjMwMjAzMTUwMDAy
+# WjAvBgkqhkiG9w0BCQQxIgQgO7J1vnXwjhBO6EWNpUjtXeNb6NVMsdOc2qHqTKPD
+# 4zswDQYJKoZIhvcNAQEBBQAEggIAfUKKAvT1gAQXkUs71Wov9xmlW7+IF3Qo2RNq
+# 3rFvIeZ2ZlGqTOJpG1ukInZ1JHOPBLQ0T7TTZlxFt1ackfDkE2zREitAcFZXJBMS
+# iLrtvSzj8v7eR7ssYeoLx5ZU6L7ADm9q37bWTdGSA0pFUPEc0qtLmWxh723Yxllv
+# M97KyAscmwtKlMSwM7hrNnvHI87X3ZGagLBUULblnA+9bXjmfjJ8YDXSV91jLSrz
+# 2U2WIY2+JhykdGrJjzca9V/ynbpVxdZMIcGgseFO1OL4bRbz1DpikSxPTS5psY3D
+# zEP05JCaKtSl0EAmr++Hgnlxa9Yx5+aqRWO8uYDBN0XmEwDQkupst1jpaRgmRJza
+# oPHc+4Kxb74JJ4eBMJwHeawclKajRxqX9v+DrRQmyMFicVjkrKqz0Kx82vaEJHi2
+# kg5bsXxC3HvaVpX7HqDbi1Hw/VM943N8lvKgiIxm5oL05Bm13EOBVOj9TZEofmUU
+# tVmXRFKcyWc0TIgRoVyviJFfyFJzkrzsUP0lPhVB4rT8N/51fywsGHFw2QRB/eSm
+# kK1NapUHxFexDfNc3lDD6vYtt9fN/9cO1u+SztNWX0r8D755qkgG8WNo6MwjKLmG
+# RIRHUV76oL8DeN8WyyLz4OJTynFrmzfOKA1I6V2D2CEbILSk0wNCzCqfMcvunNno
+# cB3r+/0=
 # SIG # End signature block
